@@ -53,6 +53,8 @@ export default {
           quantity: 5,
           category: ["Seafood", "Fresh"],
           img: "https://cdn-prod.medicalnewstoday.com/content/images/articles/322/322522/fresh-fish-on-ice.jpg",
+          description:
+            "Smell that smelly smell? That's one of the sea's greatest treasures! With a gut-wrenching odor that puts college students to shame, yet a flavor profile so rich and profound, you'll be seeing 5.0s as 1.0s. Brand X Premium Tuna, good for the heart, good for the mind. ",
           brand: "Brand X",
         },
         {
@@ -62,6 +64,8 @@ export default {
           quantity: 9,
           category: ["Poultry", "Fresh"],
           img: "https://www.seriouseats.com/thmb/t82X6N4ZwGkFZmWPuCjwT-osL3g=/1500x844/smart/filters:no_upscale()/20210714-potato-starch-fried-chicken-vicky-wasik-seriouseats-20-17e193a6bf274bba9091810a0b18ef89.jpg",
+          description:
+            "Are you flat? SAY NO MORE FAM! Brand Y's Raw Chicken has all the essential chemicals that you need to enlarge your modest chests. Soak it with some chicken batter, and fry it over golden, medium heat oil and ooh la lah - you've got Jollibee Towel Chicken beat! Brand Y's Raw Chicken comes in various types, from chest enlarging to third leg enhancing; we've got you covered.",
           brand: "Brand Y",
         },
         {
@@ -71,6 +75,8 @@ export default {
           quantity: 11,
           category: ["Meat"],
           img: "https://post.healthline.com/wp-content/uploads/2020/08/beef-update-1200x628-facebook-1200x628.jpg",
+          description:
+            "A dead cow is almost always certainly a good, good accompaniment to a smoking hot grill. Wanna know what else is smoking hot? That's right - Brand Y's Juicy Loozy Ground Beef. Sourced from cattle royalty in locations across the globe, the quality of our meat will not let you down! Our cows are fed with the most luxurious grass in Antartica and enjoy only the stinkiest pig pens as their resting place. Having gone through strict quality control, our beef truly outshines others.",
           brand: "Brand Y",
         },
         {
@@ -80,6 +86,8 @@ export default {
           quantity: 20,
           category: ["Sauce", "Seasoning"],
           img: "https://www.tasteofhome.com/wp-content/uploads/2020/01/GettyImages-461879075.jpg?fit=700,1024",
+          description:
+            "KNORR. LIQUID. SEASONING. IS. THE. SUPERIOR. CONDIMENT. Brand Z's own variation of the ever famous Knorr Liquid Seasoning is made even richer with the presence of grounded fetus placenta mixed with 3-week old dried menstrual discharge. Pair it together with your favorite meals such as hatdog, etlog, and sosej. Brand Z Liquid Seasoning - extending the horizons of taste.",
           brand: "Brand Z",
         },
         {
@@ -89,6 +97,8 @@ export default {
           quantity: 72,
           category: ["Dairy"],
           img: "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
+          description:
+            "For over 69 years, and with around 420 serious undertakings in improving egg quality, Brand Z has secured its place among all egg providers through rigorous stroking of our hens, which have been proven to help them relax. By subjecting our farm fresh eggs into a three step process called NNN which stands for Nurture, Neglect, and Numb, the bacteria count has increased by over 666 times! Wowie. Brand Z, never gonna let you down. ",
           brand: "Brand Z",
         },
         {
@@ -98,6 +108,8 @@ export default {
           quantity: 12,
           category: ["Meat"],
           img: "https://www.seriouseats.com/thmb/yHg0KQZc928Iqbm8G-aOE91gJb0=/1500x1125/filters:fill(auto,1)/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2016__02__20160208-sous-vide-pork-chop-guide-food-lab-37-9bfa2f9b8a464bccad99ea08423b9d8e.jpg",
+          description:
+            "Certified as top-quality pork by none other than Peppa Pig herself, Brand Z's Pork Cuts doesn't hold back when it comes to taste. Quality control of our pork includes repeated gnawing, biting, and chewing of the raw, hairy, pig carcass by our underpaid ...workers, who seemingly cannot get enough of the taste of our pork and resign on the first day, presumably to spread the good news of our pork to all who are willing to hear. ",
           brand: "Brand Z",
         },
       ],
