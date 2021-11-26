@@ -5,7 +5,6 @@ import Favorites from "../views/Favorites.vue";
 import Cart from "../views/Cart.vue";
 import CartCheckout from "../views/CartCheckout.vue";
 import CartDone from "../views/CartDone.vue";
-import About from "../views/About.vue";
 
 const routes = [
   {
@@ -39,11 +38,6 @@ const routes = [
         component: CartDone,
       },
     ],
-  },
-  {
-    path: "/about",
-    name: "About",
-    component: About,
   },
   // {
   //   path: '/about',

@@ -3,7 +3,11 @@
     <div class="container-cart-products">
       <div class="cart-select-all">
         <div class="select-inline">
-          <InputCheckbox id="selectAll" />
+          <InputCheckbox
+            :checked="isChecked"
+            id="selectAll"
+            v-model="isSelected"
+          />
           <label for="selectAll">Select All</label>
         </div>
         <div class="select-inline-headers">
@@ -12,10 +16,26 @@
           <div><span>Total Price</span></div>
         </div>
       </div>
-      <CartBrands :brands="cart" />
+      <CartBrands
+        :brands="cart"
+        :isAllSelected="isSelected === true ? true : false"
+        @update-cart="buildFinalCart"
+        @remove-from-cart="removeFromCart"
+        @uncheck-select="
+          isChecked = false;
+          selected = 0;
+        "
+        @check-select="getStatus"
+      />
     </div>
     <div class="container-checkout-area">
-      <CartCheckoutForm :total-price="totalPrice" />
+      <CartCheckoutForm
+        :totalPrice="totalPrice"
+        :finalCart="finalCart"
+        @update-total-price="updateTotalPrice"
+        @reset-price="updateTotalPrice(totalPriceOrig)"
+        @final-cart="$emit('final-cart', finalCart)"
+      />
     </div>
   </div>
 </template>
@@ -37,38 +57,79 @@ export default {
       cart: [],
       finalCart: [],
       totalPrice: 0,
+      totalPriceOrig: 0,
+      selected: 0,
+      isSelected: Boolean,
+      isChecked: Boolean,
+      total: Number,
     };
+  },
+  watch: {
+    products: {
+      handler() {
+        console.log("DELETED");
+        this.cart.splice(0);
+        // val.forEach((product) => this.cart.push(product));
+        this.createCart();
+      },
+      deep: true,
+    },
+    isSelected: function (val) {
+      if (val) {
+        this.total = this.selected;
+      }
+    },
   },
   props: {
     products: Array,
   },
-  watch: {
-    totalPrice: function () {
-      // REBUILD THE FINAL CART
-      console.log(this.totalPrice);
+  methods: {
+    getStatus() {
+      this.selected++;
+      console.log(this.selected);
+      if (this.selected == this.total) {
+        this.isSelected = true;
+        this.isChecked = true;
+      }
+    },
+    buildFinalCart(cart) {
+      const tp = cart.reduce((a, b) => {
+        return a + b.bquantity * b.price;
+      }, 0);
+      this.totalPrice = tp.toString().length == 0 ? 0 : tp;
+      this.totalPriceOrig = this.totalPrice;
+      this.finalCart.splice(0);
+      cart.forEach((product) => this.finalCart.push(product));
+    },
+    removeFromCart(id) {
+      this.$emit("remove-from-cart", id);
+    },
+    createCart() {
+      let brands = [
+        ...new Set(
+          this.$props.products.map((product) => {
+            return product.brand;
+          })
+        ),
+      ];
+
+      brands.forEach((brand) => {
+        this.cart.push({
+          brand: brand,
+          products: this.$props.products.filter(
+            (product) => product.brand == brand
+          ),
+        });
+      });
+    },
+    updateTotalPrice(price) {
+      this.totalPrice = price;
     },
   },
-  created() {
-    const brands = [
-      ...new Set(
-        this.$props.products.map((product) => {
-          this.totalPrice += product.price * product.bquantity;
-          return product.brand;
-        })
-      ),
-    ];
-
-    brands.forEach((brand) => {
-      this.cart.push({
-        brand: brand,
-        products: this.$props.products.filter(
-          (product) => product.brand == brand
-        ),
-      });
-    });
-
-    console.log(this.totalPrice);
+  mounted() {
+    this.createCart();
   },
+  emits: ["remove-from-cart", "final-cart"],
 };
 </script>
 
@@ -105,6 +166,10 @@ export default {
   align-items: center;
   gap: 12px;
   width: max-content;
+  width: 45%;
+}
+
+.select-inline-headers {
   width: 50%;
 }
 

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Modal v-show="showModal" :text="modalText" />
     <Title :title="'Product Details'" />
     <div class="container-product-detail">
       <div class="container-product-formal">
@@ -105,6 +106,7 @@
 import Button from "../components/Button.vue";
 import Error from "../components/Utilities/Error.vue";
 import Input from "../components/Input/Input.vue";
+import Modal from "../components/Modal.vue";
 import Subtitle from "../components/Utilities/Subtitle.vue";
 import Title from "../components/Utilities/Title.vue";
 import PillContainer from "../components/Pills/PillContainer.vue";
@@ -118,12 +120,15 @@ export default {
       isHovered: false,
       buyQuantity: 1,
       validInput: true,
+      showModal: false,
+      modalText: "",
     };
   },
   components: {
     Button,
     Error,
     Input,
+    Modal,
     Subtitle,
     Title,
     PillContainer,
@@ -136,6 +141,14 @@ export default {
         this.validInput = true;
       }
     },
+    showModal(val) {
+      if (val) {
+        setTimeout(() => {
+          this.showModal = false;
+          this.modalText = "";
+        }, 500);
+      }
+    },
   },
   props: {
     products: Array,
@@ -144,9 +157,12 @@ export default {
   methods: {
     favoriteThis() {
       this.isFavorited = !this.isFavorited;
+      this.modalText =
+        this.isFavorited == true
+          ? "Added to favorites!"
+          : "Removed from favorites!";
+      this.showModal = true;
 
-      // TODO
-      // Add modal pop up to indicate success
       this.$emit("update-favorite", {
         id: this.product.id,
         status: this.isFavorited,
@@ -156,12 +172,16 @@ export default {
       this.buyQuantity = parseInt(event.target.value);
     },
     addToCart() {
-      this.validInput
-        ? this.$emit("add-to-cart", {
-            id: this.product.id,
-            quantity: this.buyQuantity,
-          })
-        : alert("Invalid input");
+      if (this.validInput) {
+        this.$emit("add-to-cart", {
+          id: this.product.id,
+          quantity: this.buyQuantity,
+        });
+        this.modalText = "Added to cart!";
+      } else {
+        this.modalText = "Cannot buy more than stock.";
+      }
+      this.showModal = true;
     },
   },
   computed: {

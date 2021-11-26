@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <Modal v-show="showModal" :text="modalText" />
     <div class="left">
       <Navbar />
     </div>
@@ -12,6 +13,8 @@
         @add-favorite="addSelectedToFavorites"
         @remove-favorite="removeSelectedFromFavorites"
         @add-to-cart="addToCart"
+        @remove-from-cart="removeFromCart"
+        @final-cart="updateCart"
       ></router-view>
     </div>
     <ExternalLinks />
@@ -19,12 +22,14 @@
 </template>
 
 <script>
+import Modal from "./components/Modal.vue";
 import Navbar from "./components/Nav/Navbar.vue";
 import ExternalLinks from "./components/Nav/ExternalLinks.vue";
 
 export default {
   components: {
     Navbar,
+    Modal,
     ExternalLinks,
   },
   data() {
@@ -98,7 +103,19 @@ export default {
       ],
       favorites: [],
       cartProducts: [],
+      showModal: false,
+      modalText: "",
     };
+  },
+  watch: {
+    showModal: function (val) {
+      if (val) {
+        setTimeout(() => {
+          this.modalText = "";
+          this.showModal = false;
+        }, 500);
+      }
+    },
   },
   methods: {
     updateFavorites({ id, status }) {
@@ -109,14 +126,10 @@ export default {
         : (this.favorites = this.favorites.filter(
             (favorite) => favorite.id != id
           ));
-
-      console.log(this.favorites);
     },
     addSelectedToFavorites(id) {
       if (this.favorites.find((favorite) => favorite.id === id) === undefined) {
         this.updateFavorites({ id: id, status: true });
-      } else {
-        console.log("already in favorites, fool!");
       }
     },
     removeSelectedFromFavorites(id) {
@@ -130,10 +143,18 @@ export default {
 
       if (this.cartProducts.find((product) => product.id === id) == undefined) {
         this.cartProducts.push(product);
-      } else {
-        alert("already in cart fool");
       }
-      console.log(this.cartProducts);
+    },
+    removeFromCart(id) {
+      const index = this.cartProducts.findIndex((product) => product.id == id);
+      this.cartProducts.splice(index, 1);
+      // console.log(this.cartProducts);
+    },
+    updateCart(discard) {
+      discard.forEach((p) => {
+        let index = this.cartProducts.findIndex((prod) => prod.id == p.id);
+        this.cartProducts.splice(index, 1);
+      });
     },
   },
 };

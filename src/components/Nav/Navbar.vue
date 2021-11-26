@@ -47,12 +47,6 @@ export default {
           icon: "fa-solid fa-cart-shopping",
           link: "/cart",
         },
-        {
-          name: "About",
-          active: false,
-          icon: "fa-solid fa-circle-question",
-          link: "/about",
-        },
       ],
     };
   },

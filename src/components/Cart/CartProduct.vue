@@ -1,7 +1,7 @@
 <template>
   <div class="cart-product-formal">
     <div class="cart-product-left">
-      <InputCheckbox @checkbox-checked="updateStatus" />
+      <InputCheckbox :checked="isSelected" v-model="isSelected" />
       <img :src="product.img" :alt="product.name" class="product-img" />
       <div class="product-info">
         <div class="product-name">{{ product.name }}</div>
@@ -33,7 +33,16 @@
           "
         ></i>
       </div>
-      <div>P{{ product.price * buyQuantity }}</div>
+      <div>
+        P{{
+          validInput
+            ? product.price * buyQuantity
+            : product.price * product.bquantity
+        }}
+      </div>
+    </div>
+    <div class="delete">
+      <i class="fa-solid fa-trash" @click="removeFromCart"> </i>
     </div>
   </div>
 </template>
@@ -50,42 +59,57 @@ export default {
       isSelected: false,
     };
   },
-  props: { product: Object, isAllSelected: Boolean },
+  props: { product: Object, isAllSelected: { type: Boolean, default: false } },
   components: { Input, InputCheckbox },
   watch: {
     buyQuantity: function () {
-      if (
-        this.buyQuantity > this.$props.product.quantity ||
-        this.buyQuantity < 1
-      ) {
+      if (this.buyQuantity > this.product.quantity || this.buyQuantity < 1) {
         this.validInput = false;
       } else {
         this.validInput = true;
       }
 
-      this.isSelected
+      this.isSelected && this.validInput
         ? this.$emit("update-quantity", {
-            product: this.product,
+            id: this.product.id,
             quantity: this.buyQuantity,
           })
         : "";
     },
+    isAllSelected: function (val) {
+      if (val == true && this.isSelected != true) {
+        this.isSelected = true;
+      } else if (val == false && this.isSelected == true) {
+        this.isSelected = false;
+      }
+    },
+    isSelected: function (val) {
+      this.updateStatus(val);
+    },
   },
   methods: {
     updateQuantity(event) {
-      this.buyQuantity = parseInt(event.target.value);
+      const q = parseInt(event.target.value);
+      this.buyQuantity = isNaN(q)
+        ? !this.validInput
+          ? this.buyQuantity
+          : ""
+        : q;
     },
     updateStatus(status) {
       this.isSelected = status;
 
-      if (status === true) {
+      if (status === true && this.validInput) {
         this.$emit("product-checkout", {
-          id: this.product.id,
+          product: this.product,
           quantity: this.buyQuantity,
         });
       } else {
         this.$emit("product-remove", this.product.id);
       }
+    },
+    removeFromCart() {
+      this.$emit("remove-from-cart", this.product.id);
     },
   },
   created() {
@@ -105,7 +129,12 @@ export default {
         : false;
     },
   },
-  emits: ["product-checkout", "product-remove", "update-quantity"],
+  emits: [
+    "product-checkout",
+    "product-remove",
+    "update-quantity",
+    "remove-from-cart",
+  ],
 };
 </script>
 
@@ -119,21 +148,18 @@ export default {
   height: 80px;
 }
 
-.cart-product-left,
-.cart-product-right {
-  width: 50%;
-}
-
 .cart-product-left {
   display: flex;
   align-items: center;
   gap: 20px;
+  width: 45%;
   padding-left: 40px;
 }
 
 .cart-product-right {
   display: flex;
   justify-content: space-between;
+  width: 50%;
 }
 
 .cart-product-right > div {
@@ -147,11 +173,13 @@ export default {
   gap: 10px;
 }
 
+.delete > i,
 .product-quantity > i {
   color: var(--tph-tertiary);
   cursor: pointer;
 }
 
+.delete > i:hover,
 .product-quantity > i:hover {
   color: var(--tph-highlight);
 }
@@ -169,5 +197,9 @@ export default {
   display: flex;
   flex-direction: column;
   width: max-content;
+}
+
+.delete > i {
+  font-size: 24px;
 }
 </style>

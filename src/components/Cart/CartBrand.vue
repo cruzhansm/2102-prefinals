@@ -1,9 +1,8 @@
 <template>
   <div class="cart-product-group">
     <div style="margin-bottom: 5px">
-      <div class="select-inline">
-        <InputCheckbox :id="brand" v-model="isSelected" />
-        <div>{{ isSelected }}</div>
+      <div class="select-inline" @click="pr">
+        <InputCheckbox :checked="isSelected" :id="brand" v-model="isSelected" />
         <label :for="brand">{{ brand }}</label>
       </div>
       <div class="select-inline-headers">
@@ -13,11 +12,14 @@
       </div>
     </div>
     <CartProduct
-      v-for="(product, index) in products"
-      :key="index"
+      v-for="product in products"
+      :key="product.id"
       :product="product"
-      :isAllSelected="childrenStatus"
+      :isAllSelected="isSelected"
       @product-checkout="addToFinalCart"
+      @product-remove="removeFromFinalCart"
+      @update-quantity="updateProductQuantity"
+      @remove-from-cart="removeFromCart"
     />
   </div>
 </template>
@@ -33,36 +35,73 @@ export default {
   },
   data() {
     return {
-      isSelected: false,
-      childrenIsSelected: false,
-      childrenStatus: false,
-      selectedCount: 0,
+      isSelected: Boolean,
       finalSelection: [],
+      cart: [],
     };
-  },
-  methods: {
-    addToFinalCart({ product, quantity }) {
-      console.log(typeof product);
-      console.log(typeof quantity);
-    },
-    removeFromFinalCart(id) {
-      this.finalSelection = this.finalSelection.filter(
-        (product) => product.id === id
-      );
-      console.log(this.finalSelection);
-    },
-    updateProductQuantity({ id, quantity }) {
-      console.log(this.finalSelection);
-      // const index = this.finalSelection.filter((product) => product.id == id);
-      // this.finalSelection[index].bquantity = quantity;
-      console.log(id + " " + quantity);
-    },
   },
   props: {
     products: Array,
     brand: String,
     isAllSelected: Boolean,
   },
+  watch: {
+    isAllSelected: function () {
+      this.isAllSelected === true
+        ? (this.isSelected = true)
+        : (this.isSelected = false);
+    },
+    isSelected: function (val) {
+      val === false ? this.$emit("uncheck-select") : this.$emit("check-select");
+    },
+  },
+  methods: {
+    addToFinalCart({ product, quantity }) {
+      const p = product;
+      p.bquantity = quantity;
+
+      if (this.finalSelection.find((item) => item.id === p.id) == undefined) {
+        this.finalSelection.push(p);
+      }
+
+      this.$emit("brand-cart-update", {
+        brand: this.brand,
+        products: this.finalSelection,
+      });
+    },
+    removeFromFinalCart(id) {
+      this.finalSelection = this.finalSelection.filter(
+        (product) => product.id !== id
+      );
+      this.$emit("brand-cart-update", {
+        brand: this.brand,
+        products: this.finalSelection,
+      });
+    },
+    removeFromCart(id) {
+      this.$emit("remove-from-cart", id);
+      this.removeFromFinalCart(id);
+    },
+    updateProductQuantity({ id, quantity }) {
+      const index = this.finalSelection.findIndex(
+        (product) => product.id == id
+      );
+      this.finalSelection[index].bquantity = quantity;
+      this.$emit("brand-cart-update", {
+        brand: this.brand,
+        products: this.finalSelection,
+      });
+    },
+  },
+  mounted() {
+    this.products.forEach((product) => this.cart.push(product));
+  },
+  emits: [
+    "brand-cart-update",
+    "remove-from-cart",
+    "check-select",
+    "uncheck-select",
+  ],
 };
 </script>
 
