@@ -2,7 +2,7 @@
   <div class="external-links">
     <div class="src-code-link">
       <a
-        href="https://github.com/cruzhansm"
+        href="https://github.com/cruzhansm/2102-prefinals"
         target="_blank"
         class="fa-brands fa-github"
       ></a>
