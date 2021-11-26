@@ -18,6 +18,10 @@
         :link="link.link"
       />
     </div>
+    <div class="note">
+      This project was designed for 16:9 aspect-ratio or 1920x1080 monitors. It
+      may look weird if viewed in a different aspect-ratio.
+    </div>
   </nav>
 </template>
 
@@ -65,6 +69,7 @@ nav {
   justify-content: space-evenly;
   width: 310px;
   height: 350px;
+  position: relative;
 }
 
 .store {
@@ -89,5 +94,11 @@ nav {
 .store-links {
   padding: 0;
   margin-left: 30px;
+}
+
+.note {
+  font-size: 18px;
+  position: absolute;
+  bottom: -150px;
 }
 </style>
